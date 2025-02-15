@@ -79,7 +79,29 @@ def split_node_image(old_nodes):
         matches = extract_markdown_images(node.text)
         if not matches:
             new_nodes.append(node)
-        else:
+            continue
+
+        text = node.text
+
+        for match in matches:
+            sections = text.split(f'![{match[0]}]({match[1]})',1)
+
+            if len(sections) != 2:
+                raise ValueError("Image Not formatted correctly")
+            
+            if sections[0] != "":
+                new_nodes.append(TextNode(sections[0],TextType.TEXT))
+            new_nodes.append(TextNode(
+                match[0],
+                TextType.IMAGE,
+                match[1]
+            ))
+
+            text = sections[1]
+        if text != "":
+            new_nodes.append(TextNode(text,TextType.TEXT))
+
+        """ else:
             text = node.text
             splitted = [text]
             
@@ -92,7 +114,7 @@ def split_node_image(old_nodes):
 
                 
             #print(splitted)
-            node_to_list(splitted, new_nodes, TextType.IMAGE, matches)
+            node_to_list(splitted, new_nodes, TextType.IMAGE, matches) """
     return new_nodes
 
 def split_node_link(old_nodes):
@@ -101,7 +123,27 @@ def split_node_link(old_nodes):
         matches = extract_markdown_link(node.text)
         if not matches:
             new_nodes.append(node)
-        else:
+            continue
+
+        text = node.text
+        for match in matches:
+            sections = text.split(f'[{match[0]}]({match[1]})',1)
+
+            if len(sections) != 2:
+                raise ValueError("Link Not formatted correctly")
+            
+            if sections[0] != "":
+                new_nodes.append(TextNode(sections[0],TextType.TEXT))
+            new_nodes.append(TextNode(
+                match[0],
+                TextType.LINK,
+                match[1]))
+            
+            text = sections[1]
+        if text != "":
+            new_nodes.append(TextNode(text,TextType.TEXT))
+
+        """ else:
             text = node.text
             splitted = [text]
             
@@ -114,7 +156,7 @@ def split_node_link(old_nodes):
 
                 
             #print(splitted)
-            node_to_list(splitted, new_nodes, TextType.LINK, matches)
+            node_to_list(splitted, new_nodes, TextType.LINK, matches) """
     return new_nodes
 
 
