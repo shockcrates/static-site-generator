@@ -25,16 +25,8 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
             
             splitted = node.text.split(delimiter)
             
-            if len(splitted) % 2 == 1:
-                if node.text[0] == delimiter:
-                    node_to_list(splitted, new_nodes, text_type)
-                    new_nodes = new_nodes[1:]
-                    
-                elif node.text[-1] == delimiter:
-                    node_to_list(splitted, new_nodes, text_type)
-                    new_nodes = new_nodes[:-1]
-                else:
-                    node_to_list(splitted, new_nodes, text_type)
+            if len(splitted) % 2 == 1:  
+                node_to_list(splitted, new_nodes, text_type)
             else:
                 raise Exception(f"Invalid Markdown syntax: missing closing '{delimiter}'")
 
@@ -42,27 +34,14 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
             new_nodes.append(node)
     return new_nodes
 
-def node_to_list(splitted, new_nodes, text_type, urls=None):
-    url_count = 0
+def node_to_list(splitted, new_nodes, text_type):
     
     for i in range(len(splitted)):
-        if text_type ==TextType.IMAGE or text_type==TextType.LINK:
+        if len(splitted[i]) != 0:
             if is_even(i):
-                #print(len(splitted[i]))
-                if len(splitted[i]) != 0:
-                    new_nodes.append(TextNode(splitted[i],TextType.TEXT))
+                new_nodes.append(TextNode(splitted[i],TextType.TEXT))
             else:
-                if len(splitted[i]) != 0:
-                    new_nodes.append(TextNode(splitted[i],text_type, urls[url_count][1]))
-                    url_count += 1
-            
-        else:
-            if is_even(i):
-                if len(splitted[i]) != 0:
-                    new_nodes.append(TextNode(splitted[i],TextType.TEXT))
-            else:
-                if len(splitted[i]) != 0:
-                    new_nodes.append(TextNode(splitted[i],text_type))
+                new_nodes.append(TextNode(splitted[i],text_type))
             
 def is_even(number):
     return number % 2 == 0
