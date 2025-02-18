@@ -1,4 +1,4 @@
-
+import re
 
 def markdown_to_blocks(markdown):
     lines = markdown.split("\n")
@@ -25,3 +25,57 @@ def markdown_to_blocks(markdown):
                 blocks.append(block)
     
     return blocks
+
+def block_to_blocktype(block):
+    if check_heading(block):
+        return "Heading"
+    elif check_code(block):
+        return "code"
+    elif check_quote(block):
+        return "Quote"
+    elif check_unordered_list(block):
+        return "Unordered List"
+    elif check_ordered_list(block):
+        return "Ordered List"
+    else:
+        return "Paragraph"
+
+def check_heading(text):
+    pattern = r'(?<!#)#{1,6}(?!#) '
+    match = re.search( pattern, text)
+    #print("match: " + repr(match))
+    return bool(match)
+
+def check_code(text):
+    if text[0:3] == "```" and  text[-3:] == "```":
+        return True
+    return False
+
+def check_quote(text):
+    lines = text.split("\n")
+    print(repr(lines))
+    is_list = True
+    for line in lines:
+        if line[0:2] != "> ":
+            is_list =  False
+    return is_list
+
+def check_unordered_list(text):
+    lines = text.split("\n")
+    is_list = True
+    
+    for line in lines:
+        if line[0:2] != "* " and line[0:2] != "- ":
+            is_list = False
+    return is_list
+
+
+
+def check_ordered_list(text):
+    lines = text.split("\n")
+    
+    is_list = True
+    for i in range(len(lines)):
+        if lines[i][0:3] != f'{i + 1}. ':
+            is_list = False
+    return is_list
