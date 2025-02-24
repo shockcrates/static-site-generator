@@ -38,11 +38,12 @@ This is a paragraph of text. It has some **bold** and *italic* words inside of i
 
     def test_block_to_blocktype(self):
         text = "#### This is a subheading"
-        result = block_to_blocktype(text)
+        result = block_to_blocktype(text) == "Heading"
         text2 = """* Bullet 1\n* Bullet 2"""
-        result2 = block_to_blocktype(text2)
+        result2 = block_to_blocktype(text2) == "Unordered List"
         text3 = "1. Bullet 1\n2. Bullet 2"
-        result3 = block_to_blocktype(text3)
-        print(result)
-        print(result2)
-        print(result3)
+        result3 = block_to_blocktype(text3) == "Ordered List"
+        text4 = "```\nCODE LOTS AND LOTS OF CODE\n```"
+        result4 = block_to_blocktype(text4) == "Code"
+        
+        self.assertTrue(result and result2 and result3 and result4)

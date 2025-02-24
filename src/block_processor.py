@@ -30,7 +30,7 @@ def block_to_blocktype(block):
     if check_heading(block):
         return "Heading"
     elif check_code(block):
-        return "code"
+        return "Code"
     elif check_quote(block):
         return "Quote"
     elif check_unordered_list(block):
@@ -53,7 +53,7 @@ def check_code(text):
 
 def check_quote(text):
     lines = text.split("\n")
-    print(repr(lines))
+    #print(repr(lines))
     is_list = True
     for line in lines:
         if line[0:2] != "> ":
@@ -65,10 +65,11 @@ def check_unordered_list(text):
     is_list = True
     
     for line in lines:
-        if line[0:2] != "* " and line[0:2] != "- ":
+        
+        if line[0:2] != "* " and line[0:2] != "- " and line != "":
+            print("MAKRED FALSE: " + line)
             is_list = False
     return is_list
-
 
 
 def check_ordered_list(text):
@@ -76,6 +77,6 @@ def check_ordered_list(text):
     
     is_list = True
     for i in range(len(lines)):
-        if lines[i][0:3] != f'{i + 1}. ':
+        if lines[i][0:3] != f'{i + 1}. ' and lines[i] != "":
             is_list = False
     return is_list
