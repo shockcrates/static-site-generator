@@ -3,7 +3,7 @@ import re
 
 
 def text_to_textnodes(text):
-    delimiter_list = [(TextType.BOLD,'**'),(TextType.ITALIC, '*'),(TextType.CODE,'`')]
+    delimiter_list = [(TextType.BOLD,'**'),(TextType.ITALIC, '_'),(TextType.CODE,'`')]
 
     node_list = [TextNode(text,TextType.TEXT)]
     for delimiter in delimiter_list:
@@ -50,7 +50,7 @@ def extract_markdown_images(text):
     return re.findall(r"!\[(.*?)\]\((.*?)\)", text)
 
 def extract_markdown_link(text):
-    return re.findall(r" \[(.*?)\]\((.*?)\)", text)
+    return re.findall(r"(?<!!)\[(.*?)\]\((.*?)\)", text)
 
 def split_node_image(old_nodes):
     new_nodes = []
@@ -103,10 +103,11 @@ def split_node_link(old_nodes):
         if not matches:
             new_nodes.append(node)
             continue
-
+        print(repr(matches))
         text = node.text
         for match in matches:
             sections = text.split(f'[{match[0]}]({match[1]})',1)
+            
 
             if len(sections) != 2:
                 raise ValueError("Link Not formatted correctly")

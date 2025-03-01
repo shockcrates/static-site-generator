@@ -23,8 +23,8 @@ class TestInlineProcessor(unittest.TestCase):
         ])
 
     def test_split_nodes_delimiter_1_italic(self):
-        node = TextNode("This is text with a *code block* word", TextType.TEXT)
-        new_nodes = split_nodes_delimiter([node], "*", TextType.ITALIC)
+        node = TextNode("This is text with a _code block_ word", TextType.TEXT)
+        new_nodes = split_nodes_delimiter([node], "_", TextType.ITALIC)
         
         self.assertEqual(new_nodes, [
             TextNode("This is text with a ", TextType.TEXT),
@@ -33,10 +33,10 @@ class TestInlineProcessor(unittest.TestCase):
         ])
 
     def test_split_nodes_delimiter_1_italic_looking_for_bold(self):
-        node = TextNode("This is text with a *code block* word", TextType.TEXT)
+        node = TextNode("This is text with a _code block_ word", TextType.TEXT)
         new_nodes = split_nodes_delimiter([node], "**", TextType.BOLD)
         self.assertEqual(new_nodes, [
-            TextNode("This is text with a *code block* word", TextType.TEXT),
+            TextNode("This is text with a _code block_ word", TextType.TEXT),
             
         ])
 
@@ -81,8 +81,8 @@ class TestInlineProcessor(unittest.TestCase):
     def test_split_nodes_delimite_missing_closing_character(self):
         threw = False
         try:
-            node = TextNode("This is text with a *code block word", TextType.TEXT)
-            new_nodes = split_nodes_delimiter([node], "*", TextType.BOLD)
+            node = TextNode("This is text with a _code block word", TextType.TEXT)
+            new_nodes = split_nodes_delimiter([node], "*", TextType.ITALIC)
         except:
             threw = True
             self.assertTrue(threw)
@@ -179,10 +179,24 @@ class TestInlineProcessor(unittest.TestCase):
         link_parsed = split_node_link(image_parsed)
 
         self.assertEqual(truth, link_parsed)
+    
+    def test_link_is_whole_text(self):
+        node = TextNode("[to youtube](https://www.youtube.com/@bootdotdev)",TextType.TEXT)
+        truth = [TextNode(
+                "to youtube", TextType.LINK, "https://www.youtube.com/@bootdotdev"
+            )]
+        parsed = split_node_link([node])
+
+        out = extract_markdown_link("[to youtube](https://www.youtube.com/@bootdotdev)")
+
+        print("TEST LINK:" + repr(out))
+
+        self.assertEqual(parsed,truth)
+
 
 
     def test_text_to_textnode(self):
-        text = "This is **text** with an *italic* word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
+        text = "This is **text** with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
         result = text_to_textnodes(text)
         truth = [
             TextNode("This is ", TextType.TEXT),

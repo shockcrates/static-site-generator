@@ -47,17 +47,24 @@ def check_heading(text):
     return bool(match)
 
 def check_code(text):
-    if text[0:3] == "```" and  text[-3:] == "```":
+    lines = text.split("\n")
+    if lines[-1] == '':
+        lines.pop()
+    #print("CODE LINES: " + repr(lines))
+    if lines[0][0:3] == "```" and  lines[-1][-3:] == "```":
+        #print("FOUDN CODE: " + text)
         return True
     return False
 
 def check_quote(text):
     lines = text.split("\n")
+    if lines[-1] == '':
+        lines.pop()
     #print(repr(lines))
     is_list = True
     for line in lines:
-        if line[0:2] != "> ":
-            is_list =  False
+        if not line.startswith(">"):
+            return False
     return is_list
 
 def check_unordered_list(text):
@@ -67,7 +74,7 @@ def check_unordered_list(text):
     for line in lines:
         
         if line[0:2] != "* " and line[0:2] != "- " and line != "":
-            print("MAKRED FALSE: " + line)
+            #print("MAKRED FALSE: " + line)
             is_list = False
     return is_list
 

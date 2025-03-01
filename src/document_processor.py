@@ -8,10 +8,12 @@ def markdown_to_htmlnode(markdown):
 
     div = ParentNode("div",[],None)
 
-    print(blocks_markdown)
+    #print(blocks_markdown)
     for block in blocks_markdown:
+        #print("BLOCK: " + block)
         block_type = block_to_blocktype(block)
-        print(block_type)
+        #print("BLOCK TYPE: " + block_type)
+        #print(block_type)
         new_node = block_type_to_HTMLNode(block, block_type)
 
         div.children.append(new_node)
@@ -25,7 +27,7 @@ def block_type_to_HTMLNode(block, block_type):
     if block_type == "Paragraph":
         ParaNode =  ParentNode("p",None,None)
         
-        children = text_to_children(block)
+        children = text_to_children(block.strip())
 
         ParaNode.children = children
 
@@ -38,7 +40,7 @@ def block_type_to_HTMLNode(block, block_type):
         #print("Count = " + str(count))
         Heading_node = ParentNode(f'h{count}',None,None)
         
-        children = text_to_children(sections[1])
+        children = text_to_children(sections[1].strip())
 
         Heading_node.children = children
         return Heading_node
@@ -50,14 +52,23 @@ def block_type_to_HTMLNode(block, block_type):
         new_lines = []
 
         for line in lines:
-            new_lines.append(line.split(" ", 1)[1])
+            if line != '':
+                new_lines.append(line.lstrip(">").strip())
+            else:
+                print(True)
 
-        section = "\n".join(new_lines)
-
-        children = text_to_children(section)
+        for i in range(len(new_lines) - 1):
+            if new_lines[i] == '':
+                #new_lines.pop(i)
+                pass
+                
+        print("LINES: " + repr(new_lines))
+        section = " ".join(new_lines)
+        print("SECTIONS: " + repr(section))
+        children = text_to_children(section.strip())
 
         QuoteNode.children.extend(children)
-
+        print("QuoteNode: " + repr(QuoteNode))
         return QuoteNode
     
     if block_type == "Unordered List":
@@ -84,14 +95,15 @@ def block_type_to_HTMLNode(block, block_type):
         return OL_node
     
     if block_type == "Code":
-        code_node = ParentNode('code',[],None)
+        pre_node = ParentNode('pre',[],None)
         
-        code_without_ticks = block[3:-3]
-        pre_node = ParentNode('pre',[ParentNode('code', text_to_children(code_without_ticks),None)])
+        code_without_ticks = block.split("```")[1]
+        #print("CODE without ticks: " + code_without_ticks)
+        code_node = ParentNode('code', text_to_children(code_without_ticks),None)
 
-        code_node.children.append(pre_node)
+        pre_node.children.append(code_node)
 
-        return code_node
+        return pre_node
 
 
 def lines_to_list_items(lines):

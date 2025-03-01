@@ -21,7 +21,7 @@ class TestDocumentProcessor(unittest.TestCase):
         block3 = "1. Line1\n2. Line2\n3. Line**333**"
         blocktype3 = block_to_blocktype(block3)
         result3 = block_type_to_HTMLNode(block3, blocktype3)
-        print(blocktype3)
+        #print(blocktype3)
 
         block4 = "```\nCODE LOTS AND LOTS OF CODE\n```"
         blocktype4 = block_to_blocktype(block4)
@@ -34,9 +34,22 @@ class TestDocumentProcessor(unittest.TestCase):
 
 This is a paragraph of text. It has some **bold** and *italic* words inside of it.
 
-1. This is the first list item in a list block
-2. This is a list item
-3. This is another list item"""
+- [Why Glorfindel is More Impressive than Legolas](/blog/glorfindel)
+- [Why Tom Bombadil Was a Mistake](/blog/tom)
+- [The Unparalleled Majesty of "The Lord of the Rings"](/blog/majesty)
+
+> "I am in fact a Hobbit in all but size."
+>
+> -- J.R.R. Tolkien
+
+```
+func main(){
+    fmt.Println("Aiya, Ambar!")
+}
+```
+"""
         result = markdown_to_htmlnode(text)
         print()
         print(result)
+        print()
+        print(result.to_html())
